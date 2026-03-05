@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String, Boolean, ForeignKey, Integer
+from sqlalchemy import String, Boolean, ForeignKey, Integer, and_
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 db = SQLAlchemy()
@@ -70,3 +70,16 @@ class Favorite(db.Model):
     favorite_id: Mapped[int] = mapped_column(Integer, nullable=False)
 
     user: Mapped["User"] = relationship(back_populates="favorites")
+
+    #RELACIONES CONDICIONALES
+
+    planet: Mapped ["Planet"] = relationship(
+        "Planet",
+        primaryjoin=and_(favorite_id == Planet.id, favorite_type == "planet"),
+        viewonly=True,
+    )
+    character: Mapped ["Character"] = relationship(
+        "Character",
+        primaryjoin=and_(favorite_id == Character.id, favorite_type == "character"),
+        viewonly=True,
+    )
